@@ -1,6 +1,7 @@
 spec = Gem::Specification.new do |s|
   s.name = 'cli-colorize'
   s.summary = 'command-line interface colorization library'
+  s.files = ['cli-colorize.rb']
   s.description = 'The cli-colorize gem is a command-line interface colorization library.'
   s.author = 'Chris St. John'
   s.email = 'chris@stjohnstudios.com'
