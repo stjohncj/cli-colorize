@@ -6,6 +6,6 @@ spec = Gem::Specification.new do |s|
   s.author = 'Chris St. John'
   s.email = 'chris@stjohnstudios.com'
   s.homepage = 'https://github.com/stjohncj/cli-colorize'
-  s.version = '0.1.2'
+  s.version = '0.1.3'
   s.rubygems_version = '1.3.7'
 end
