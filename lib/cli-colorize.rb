@@ -6,8 +6,6 @@
 # A simple module for use when colorizing output to the terminal.
 module CLIColorize
 
-  attr_accessor :off
-
   @@off = false
   @@default_color = :blue
 
@@ -71,33 +69,91 @@ module CLIColorize
       :default =>   '49'
   }
 
-  # Use safe_colorize in conjunction with CLIColorize.off and CLIColorize.on to conditionally
-  # determine whether or not output will be given the control characters for colorization.
-  # This is designed to work with a command-line switch to the script that uses this module.
-  def safe_colorize(text, color=nil)
-    return text if @@off
-    colorize(text, color)
-  end
-
   # Set control characters around text to colorize output to the terminal.
-  def colorize(text, color=nil)
+  def CLIColorize.colorize(text, color=nil)
     unless color.is_a? Hash
       color = @@default_color if color.nil?
       "#{CTRLSTR_START+SET_FORE[color.to_sym]+CTRLSTR_DELIM}#{text}#{CTRLSTR_END}"
     else
-      control_string = [ SET_FORE[color[:foreground].to_sym], SET_BACK[color[:background].to_sym], CONFIG[color[:config].to_sym] ].join(';')
+      args = []
+      args << SET_FORE[color[:foreground].to_sym] unless color[:foreground].nil?
+      args << SET_BACK[color[:background].to_sym] unless color[:background].nil?
+      args << CONFIG[color[:config].to_sym] unless color[:config].nil?
+      control_string = args.join(';')
       "#{CTRLSTR_START+control_string+CTRLSTR_DELIM}#{text}#{CTRLSTR_END}"
     end
   end
 
-  # Call CLIColorize.off to turn off colorizing (for instance to make the output safe
-  # for evaluation or for output not headed to the terminal).
-  def self.off;  @@off = true;   end
-  def self.on;   @@off = false;  end
-  def self.default_color; @@default_color; end
-  def self.default_color=(color)
+  # Instance method that exposes the class method colorize to classes that `include 'CLIColorize'`
+  def colorize(text, color=nil)
+    CLIColorize.colorize(text, color)
+  end
+
+  # Call STDOUT.puts with the colorized text.
+  def CLIColorize.puts(text, color=nil)
+    STDOUT.puts CLIColorize.colorize(text, color)
+  end
+
+  # Call STDOUT.print with the colorized text.
+  def CLIColorize.print(text, color=nil)
+    STDOUT.print CLIColorize.colorize(text, color)
+  end
+
+  # Use safe_colorize in conjunction with CLIColorize.off and CLIColorize.on to conditionally
+  # determine whether or not output will be given the control characters for colorization.
+  # This is designed to work with a command-line switch to the script that uses this module.
+  def CLIColorize.safe_colorize(text, color=nil)
+    return text if @@off
+    colorize(text, color)
+  end
+
+  # Instance method that exposes the class method safe_colorize to classes that `include 'CLIColorize'`
+  def safe_colorize(text, color=nil)
+    CLIColorize.safe_colorize(text, color)
+  end
+
+  # Makes the safe_colorize method return text with colorization control codes. This is the default state.
+  def safe_colorize_active
+    CLIColorize.on
+  end
+
+  # Makes the safe_colorize method return text without colorization control codes.
+  def safe_colorize_deactive
+    CLIColorize.off
+  end
+
+  # Call STDOUT.puts with the colorized text.
+  def CLIColorize.safe_puts(text, color=nil)
+    STDOUT.puts CLIColorize.safe_colorize(text, color)
+  end
+
+  # Call STDOUT.print with the colorized text.
+  def CLIColorize.safe_print(text, color=nil)
+    STDOUT.print CLIColorize.safe_colorize(text, color)
+  end
+
+  # Instance method that exposes the class method safe_puts to classes that `include 'CLIColorize'`
+  def safe_puts(text, color=nil)
+    CLIColorize.safe_puts(text, color)
+  end
+
+  # Instance method that exposes the class method safe_puts to classes that `include 'CLIColorize'`
+  def safe_print(text, color=nil)
+    CLIColorize.safe_print(text, color)
+  end
+
+  def CLIColorize.default_color; @@default_color; end
+  def CLIColorize.default_color=(color)
     @@default_color = color.to_sym
   end
-  def off;  @@off = true;   end
-  def on;   @@off = false;  end
+  def default_color; CLIColorize.default_color; end
+  def default_color=(color)
+    CLIColorize.default_color=(color)
+  end
+
+  private
+  # Call CLIColorize.off to turn off colorizing (for instance to make the output safe
+  # for evaluation or for output sometimes not headed to the terminal).
+  def CLIColorize.off;  @@off = true;   end
+  def CLIColorize.on;   @@off = false;  end
 end
