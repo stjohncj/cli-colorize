@@ -1,100 +1,95 @@
 = CLIColorize
 
 == Description:
-
-A simple Ruby module for use when colorizing output to the terminal.
+  A simple Ruby module for use when colorizing output to the terminal.
 
 
 == Installation:
-
-<sudo> gem install cli-colorize
+  <sudo> gem install cli-colorize
 
 
 == Usage:
 
 === Supported colors (for :foreground and :background):
-      - :black
-      - :red
-      - :green
-      - :yellow
-      - :blue
-      - :magenta
-      - :cyan
-      - :white
-      - :default (use the console's default color)
+  - :black
+  - :red
+  - :green
+  - :yellow
+  - :blue
+  - :magenta
+  - :cyan
+  - :white
+  - :default (use the console's default color)
 
 === Supported additional :config options:
-      - :reset        - Turn off all attributes
-      - :bright       - Set bright mode
-      - :underline    - Set underline mode
-      - :blink        - Set blink mode
-      - :swap         - Swap foreground and background color
-      - :hide         - Hide text (set foreground to background color)
+  - :reset        - Turn off all attributes
+  - :bright       - Set bright mode
+  - :underline    - Set underline mode
+  - :blink        - Set blink mode
+  - :swap         - Swap foreground and background color
+  - :hide         - Hide text (set foreground to background color)
 
 === Using the CLIColorize module directly:
-<tt>
-CLIColorize.off
-puts CLIColorize.colorize('TEST TEXT', :blue)      # Prints in blue.
-puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in the default color, NOT in blue
-CLIColorize.on
-puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in blue.
-CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow) # Prints in red with a yellow background.
-</tt>
+  CLIColorize.off
+  puts CLIColorize.colorize('TEST TEXT', :blue)      # Prints in blue.
+  puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in the default color, NOT in blue
+  CLIColorize.on
+  puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in blue.
+  CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow) # Prints in red with a yellow background.
+
 
 === Using the CLIColorize module as a mixin:
-<tt>
-require 'cli-colorize'
+  require 'cli-colorize'
 
-class HelloConsole
-  include CLIColorize
+  class HelloConsole
+    include CLIColorize
 
-  def initialize
-    CLIColorize.default_color = :red   # set the default foreground color (initially :blue)
-  end
+    def initialize
+      CLIColorize.default_color = :red   # set the default foreground color (initially :blue)
+    end
 
-  def say_hello
-    puts colorize('Hello Pretty Console!')
-  end
+    def say_hello
+      puts colorize('Hello Pretty Console!')
+    end
 
-  def fancy_greeting
-    puts colorize('Hello Console.', { :foreground => :blue, :background => :yellow, :config => :underline } )
-  end
+    def fancy_greeting
+      puts colorize('Hello Console.', { :foreground => :blue, :background => :yellow, :config => :underline } )
+    end
 
-  def in_color(set)
-    if set == true
-      CLIColorize.on
-    else
-      CLIColorize.off
+    def in_color(set)
+      if set == true
+        CLIColorize.on
+      else
+        CLIColorize.off
+      end
     end
   end
-end
 
-console = HelloConsole.new
-console.say_hello                               # prints "Hello Pretty Console!" in red
-console.fancy_greeting                          # prints "Hello Console." in blue, underlined, with a yellow background
-console.in_color(false)
-console.safe_colorize('Hi again.')              # not colorized
-console.in_color(true)
-console.safe_colorize("Let's try that again.")  # prints "Let's try that again." in red.
-</tt>
+  console = HelloConsole.new
+  console.say_hello                               # prints "Hello Pretty Console!" in red
+  console.fancy_greeting                          # prints "Hello Console." in blue, underlined, with a yellow background
+  console.in_color(false)
+  console.safe_colorize('Hi again.')              # not colorized
+  console.in_color(true)
+  console.safe_colorize("Let's try that again.")  # prints "Let's try that again." in red.
+
 
 === Extending the CLIColorize module:
-<tt>
-require 'cli-colorize'
+  require 'cli-colorize'
 
-class HelloConsole
-  extend CLIColorize
+  class HelloConsole
+    extend CLIColorize
 
-  default_color = :red   # set the default foreground color (initially :blue)
+    default_color = :red   # set the default foreground color (initially :blue)
 
-  def self.say_hello
-    puts colorize('Hello Pretty Console!')
+    def self.say_hello
+      puts colorize('Hello Pretty Console!')
+    end
   end
-end
 
-HelloConsole.say_hello
-HelloConsole.safe_puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
-</tt>
+  HelloConsole.say_hello
+  HelloConsole.safe_puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
+
 
 == License:
 
