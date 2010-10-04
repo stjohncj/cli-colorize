@@ -13,33 +13,36 @@ A simple Ruby module for use when colorizing output to the terminal.
 == Usage:
 
 === Supported colors (for :foreground and :background):
-      :black
-      :red
-      :green
-      :yellow
-      :blue
-      :magenta
-      :cyan
-      :white
-      :default (use the console's default color)
+      - :black
+      - :red
+      - :green
+      - :yellow
+      - :blue
+      - :magenta
+      - :cyan
+      - :white
+      - :default (use the console's default color)
 
 === Supported additional :config options:
-    :reset        - Turn off all attributes
-    :bright       - Set bright mode
-    :underline    - Set underline mode
-    :blink        - Set blink mode
-    :swap         - Swap foreground and background color
-    :hide         - Hide text (set foreground to background color)
+      - :reset        - Turn off all attributes
+      - :bright       - Set bright mode
+      - :underline    - Set underline mode
+      - :blink        - Set blink mode
+      - :swap         - Swap foreground and background color
+      - :hide         - Hide text (set foreground to background color)
 
 === Using the CLIColorize module directly:
+<code>
 CLIColorize.off
 puts CLIColorize.colorize('TEST TEXT', :blue)      # Prints in blue.
 puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in the default color, NOT in blue
 CLIColorize.on
 puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in blue.
 CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow) # Prints in red with a yellow background.
+</code>
 
 === Using the CLIColorize module as a mixin:
+<code>
 require 'cli-colorize'
 
 class HelloConsole
@@ -73,8 +76,10 @@ console.in_color(false)
 console.safe_colorize('Hi again.')              # not colorized
 console.in_color(true)
 console.safe_colorize("Let's try that again.")  # prints "Let's try that again." in red.
+</code>
 
 === Extending the CLIColorize module:
+<code>
 require 'cli-colorize'
 
 class HelloConsole
@@ -89,7 +94,7 @@ end
 
 HelloConsole.say_hello
 HelloConsole.safe_puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
-
+</code>
 
 == License:
 
