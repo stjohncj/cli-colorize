@@ -31,11 +31,15 @@
 
 === Using the CLIColorize module directly:
   CLIColorize.off
-  puts CLIColorize.colorize('TEST TEXT', :blue)      # Prints in blue.
-  puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in the default color, NOT in blue
+  # Prints in blue.
+  puts CLIColorize.colorize('TEST TEXT', :blue)
+  # Prints in the default color, NOT in blue
+  puts CLIColorize.safe_colorize('TEST TEXT', :blue)
   CLIColorize.on
-  puts CLIColorize.safe_colorize('TEST TEXT', :blue) # Prints in blue.
-  CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow) # Prints in red with a yellow background.
+  # Prints in blue.
+  puts CLIColorize.safe_colorize('TEST TEXT', :blue)
+  # Prints in red with a yellow background.
+  CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
 
 
 === Using the CLIColorize module as a mixin:
@@ -45,7 +49,8 @@
     include CLIColorize
 
     def initialize
-      CLIColorize.default_color = :red   # set the default foreground color (initially :blue)
+      # set the default foreground color (initially :blue)
+      CLIColorize.default_color = :red
     end
 
     def say_hello
@@ -66,12 +71,16 @@
   end
 
   console = HelloConsole.new
-  console.say_hello                               # prints "Hello Pretty Console!" in red
-  console.fancy_greeting                          # prints "Hello Console." in blue, underlined, with a yellow background
+  # prints "Hello Pretty Console!" in red
+  console.say_hello
+  # prints "Hello Console." in blue, underlined, with a yellow background
+  console.fancy_greeting
   console.in_color(false)
-  console.safe_colorize('Hi again.')              # not colorized
+  # not colorized
+  console.safe_colorize('Hi again.')
   console.in_color(true)
-  console.safe_colorize("Let's try that again.")  # prints "Let's try that again." in red.
+  # prints "Let's try that again." in red.
+  console.safe_colorize("Let's try that again.")
 
 
 === Extending the CLIColorize module:
@@ -80,7 +89,8 @@
   class HelloConsole
     extend CLIColorize
 
-    default_color = :red   # set the default foreground color (initially :blue)
+    # set the default foreground color (initially :blue)
+    default_color = :red
 
     def self.say_hello
       puts colorize('Hello Pretty Console!')
