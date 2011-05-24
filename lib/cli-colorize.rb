@@ -141,11 +141,13 @@ module CLIColorize
   def safe_colorize_active
     CLIColorize.on
   end
+  alias safe_colorize_activate safe_colorize_active
 
   # Makes the safe_colorize method return text without colorization control codes.
   def safe_colorize_deactive
     CLIColorize.off
   end
+  alias safe_colorize_deactivate safe_colorize_deactive
 
   # Call STDOUT.puts with the colorized text.
   def CLIColorize.safe_puts(text, color=nil)
