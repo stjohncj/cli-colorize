@@ -99,6 +99,20 @@ module CLIColorize
     STDOUT.print CLIColorize.colorize(text, color)
   end
 
+  # Call STDOUT.puts with the colorized text if STDOUT is a tty device.
+  # (If STDOUT has been redirected to a file, it will be a block device,
+  # not a tty device, and we wouldn't want the ANSI codes inserted.
+  def CLIColorize.puts_if_tty(text, color=nil)
+    STDOUT.puts CLIColorize.colorize(text, color) if STDOUT.isatty
+  end
+
+  # Call STDOUT.print with the colorized text if STDOUT is a tty device.
+  # (If STDOUT has been redirected to a file, it will be a block device,
+  # not a tty device, and we wouldn't want the ANSI codes inserted.
+  def CLIColorize.print_if_tty(text, color=nil)
+    STDOUT.print CLIColorize.colorize(text, color) if STDOUT.isatty
+  end
+
   # Use safe_colorize in conjunction with CLIColorize.off and CLIColorize.on to conditionally
   # determine whether or not output will be given the control characters for colorization.
   # This is designed to work with a command-line switch to the script that uses this module.
