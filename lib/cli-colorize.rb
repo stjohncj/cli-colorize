@@ -102,25 +102,25 @@ module CLIColorize
   # Call STDOUT.puts with the colorized text if STDOUT is a tty device.
   # (If STDOUT has been redirected to a file, it will be a block device,
   # not a tty device, and we wouldn't want the ANSI codes inserted.
-  def CLIColorize.puts_if_tty(text, color=nil)
-    STDOUT.puts CLIColorize.colorize(text, color) if STDOUT.isatty
+  def CLIColorize.puts_colorized_if_tty(text, color=nil)
+    STDOUT.puts(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
   end
 
   # instance method delegating to class method, see CLIColorize.puts_if_tty
-  def puts_if_tty(text, color=nil)
-    CLIColorize.puts_if_tty(text, color)
+  def puts_colorized_if_tty(text, color=nil)
+    CLIColorize.puts_colorized_if_tty(text, color)
   end
 
   # Call STDOUT.print with the colorized text if STDOUT is a tty device.
   # (If STDOUT has been redirected to a file, it will be a block device,
   # not a tty device, and we wouldn't want the ANSI codes inserted.
-  def CLIColorize.print_if_tty(text, color=nil)
-    STDOUT.print CLIColorize.colorize(text, color) if STDOUT.isatty
+  def CLIColorize.print_colorized_if_tty(text, color=nil)
+    STDOUT.puts(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
   end
 
   # instance method delegating to class method, see CLIColorize.print_if_tty
-  def print_if_tty(text, color=nil)
-    CLIColorize.print_if_tty(text, color)
+  def print_colorized_if_tty(text, color=nil)
+    CLIColorize.print_colorized_if_tty(text, color)
   end
 
 
