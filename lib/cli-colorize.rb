@@ -185,7 +185,7 @@ module CLIColorize
   private
   # Call CLIColorize.off to turn off colorizing (for instance to make the output safe
   # for evaluation or for output sometimes not headed to the terminal).
-  def CLIColorize.off;  @@off = true;   end
-  def CLIColorize.on;   @@off = false;  end
+  def CLIColorize.off;  @@off = true;  nil; end
+  def CLIColorize.on;   @@off = false; nil; end
 
 end
