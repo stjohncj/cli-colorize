@@ -176,6 +176,10 @@ module CLIColorize
     CLIColorize.default_color=(color)
   end
 
+  def CLIColorize.on?
+    ! @@off
+  end
+
   private
   # Call CLIColorize.off to turn off colorizing (for instance to make the output safe
   # for evaluation or for output sometimes not headed to the terminal).
