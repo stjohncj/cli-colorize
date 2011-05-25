@@ -99,6 +99,31 @@ module CLIColorize
     STDOUT.print CLIColorize.colorize(text, color)
   end
 
+  # Call STDOUT.puts with the colorized text if STDOUT is a tty device.
+  # (If STDOUT has been redirected to a file, it will be a block device,
+  # not a tty device, and we wouldn't want the ANSI codes inserted.
+  def CLIColorize.puts_colorized_if_tty(text, color=nil)
+    STDOUT.puts(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
+  end
+
+  # instance method delegating to class method, see CLIColorize.puts_if_tty
+  def puts_colorized_if_tty(text, color=nil)
+    CLIColorize.puts_colorized_if_tty(text, color)
+  end
+
+  # Call STDOUT.print with the colorized text if STDOUT is a tty device.
+  # (If STDOUT has been redirected to a file, it will be a block device,
+  # not a tty device, and we wouldn't want the ANSI codes inserted.
+  def CLIColorize.print_colorized_if_tty(text, color=nil)
+    STDOUT.puts(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
+  end
+
+  # instance method delegating to class method, see CLIColorize.print_if_tty
+  def print_colorized_if_tty(text, color=nil)
+    CLIColorize.print_colorized_if_tty(text, color)
+  end
+
+
   # Use safe_colorize in conjunction with CLIColorize.off and CLIColorize.on to conditionally
   # determine whether or not output will be given the control characters for colorization.
   # This is designed to work with a command-line switch to the script that uses this module.
@@ -116,11 +141,13 @@ module CLIColorize
   def safe_colorize_active
     CLIColorize.on
   end
+  alias safe_colorize_activate safe_colorize_active
 
   # Makes the safe_colorize method return text without colorization control codes.
   def safe_colorize_deactive
     CLIColorize.off
   end
+  alias safe_colorize_deactivate safe_colorize_deactive
 
   # Call STDOUT.puts with the colorized text.
   def CLIColorize.safe_puts(text, color=nil)
@@ -151,9 +178,14 @@ module CLIColorize
     CLIColorize.default_color=(color)
   end
 
+  def CLIColorize.on?
+    ! @@off
+  end
+
   private
   # Call CLIColorize.off to turn off colorizing (for instance to make the output safe
   # for evaluation or for output sometimes not headed to the terminal).
-  def CLIColorize.off;  @@off = true;   end
-  def CLIColorize.on;   @@off = false;  end
+  def CLIColorize.off;  @@off = true;  nil; end
+  def CLIColorize.on;   @@off = false; nil; end
+
 end
