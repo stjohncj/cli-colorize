@@ -1,5 +1,7 @@
 require File.join(File.dirname(__FILE__), 'helper')
 
+require 'tempfile'
+
 class TestCliColorize < Test::Unit::TestCase
   context "Using the module directly" do
     should "have a working colorize method" do
@@ -45,6 +47,27 @@ class TestCliColorize < Test::Unit::TestCase
       CLIColorize.safe_print('Is this text the default color? (Y/n):', :foreground => :red, :background => :yellow)
       default_color = gets.chomp
       CLIColorize.on
+      flunk unless default_color == 'Y' or default_color == ''
+    end
+    should "use ANSI color escape sequences when outputting to a STDOUT that is a tty" do
+      flunk unless STDOUT.tty?
+      CLIColorize.print_colorized_if_tty('foo,', :foreground => :red, :background => :yellow)
+      CLIColorize.puts_colorized_if_tty('bar: ', :foreground => :red, :background => :yellow)
+      CLIColorize.puts_colorized_if_tty('Are foo and bar both in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
+      red_on_yellow = gets.chomp
+      flunk unless red_on_yellow == 'Y' or red_on_yellow == ''
+    end
+    should "NOT use ANSI color escape sequences when outputting to a STDOUT that is NOT a tty" do
+      orig_stdout = STDOUT
+      tempfile = Tempfile.new 'std_output.txt'
+      STDOUT = File.open(tempfile.path, 'w')
+      CLIColorize.print_colorized_if_tty('foo,')
+      CLIColorize.puts_colorized_if_tty('bar: Is this text the default color? (Y/n):', :foreground => :red, :background => :yellow)
+      STDOUT.close
+      STDOUT = orig_stdout
+      puts File.read(tempfile.path)
+      tempfile.delete
+      default_color = gets.chomp
       flunk unless default_color == 'Y' or default_color == ''
     end
   end
