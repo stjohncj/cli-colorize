@@ -40,6 +40,10 @@
   puts CLIColorize.safe_colorize('TEST TEXT', :blue)
   # Prints in red with a yellow background.
   CLIColorize.puts('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
+  CLIColorize.print('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
+  # Prints in red with a yellow background on TTY devices, not to files.
+  CLIColorize.puts_colorized_if_tty('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
+  CLIColorize.print_colorized_if_tty('Is this text in red with a yellow background? (Y/n):', :foreground => :red, :background => :yellow)
 
 
 === Using the CLIColorize module as a mixin:
