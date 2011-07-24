@@ -169,5 +169,17 @@ class TestCliColorize < Test::Unit::TestCase
       red_on_yellow = gets.chomp
       flunk unless red_on_yellow == 'Y' or red_on_yellow == ''
     end
+    should "NOT use ANSI color escape sequences when outputting to a STDOUT that is NOT a tty" do
+      orig_std_out = STDOUT.clone
+      tempfile_path = File.join(File.dirname(__FILE__), 'tempfile.txt')
+      STDOUT.reopen(File.open(tempfile_path, 'w+'))
+      print 'foo,'.green
+      puts 'bar: Is this text the default color? (Y/n):'.red.bg_yellow
+      STDOUT.reopen(orig_std_out)
+      puts File.read(tempfile_path)
+      File.delete(tempfile_path)
+      default_color = gets.chomp
+      flunk unless default_color == 'Y' or default_color == ''
+    end
   end
 end
