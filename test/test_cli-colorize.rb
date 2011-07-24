@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), 'helper')
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 require 'tempfile'
 
@@ -58,15 +58,14 @@ class TestCliColorize < Test::Unit::TestCase
       flunk unless red_on_yellow == 'Y' or red_on_yellow == ''
     end
     should "NOT use ANSI color escape sequences when outputting to a STDOUT that is NOT a tty" do
-      orig_stdout = STDOUT
-      tempfile = Tempfile.new 'std_output.txt'
-      STDOUT = File.open(tempfile.path, 'w')
+      orig_std_out = STDOUT.clone
+      tempfile_path = File.join(File.dirname(__FILE__), 'tempfile.txt')
+      STDOUT.reopen(File.open(tempfile_path, 'w+'))
       CLIColorize.print_colorized_if_tty('foo,')
       CLIColorize.puts_colorized_if_tty('bar: Is this text the default color? (Y/n):', :foreground => :red, :background => :yellow)
-      STDOUT.close
-      STDOUT = orig_stdout
-      puts File.read(tempfile.path)
-      tempfile.delete
+      STDOUT.reopen(orig_std_out)
+      puts File.read(tempfile_path)
+      File.delete(tempfile_path)
       default_color = gets.chomp
       flunk unless default_color == 'Y' or default_color == ''
     end
@@ -148,6 +147,27 @@ class TestCliColorize < Test::Unit::TestCase
       default_color = gets.chomp
       CLIColorize.on
       flunk unless default_color == 'Y' or default_color == ''
+    end
+  end
+  
+  context "Extends the String class" do
+    should "have working config actions" do
+      str = 'Is this text underlined? (Y/n):'
+      puts str.underline
+      underline = gets.chomp
+      flunk unless underline == 'Y' or underline == ''
+    end
+    should "have working foreground actions" do
+      str = 'Is this text in red? (Y/n):'
+      puts str.red
+      red = gets.chomp
+      flunk unless red == 'Y' or red == ''
+    end
+    should "have working background actions" do
+      str = 'Is this text in red with a yellow background? (Y/n):'
+      puts str.red.bg_yellow
+      red_on_yellow = gets.chomp
+      flunk unless red_on_yellow == 'Y' or red_on_yellow == ''
     end
   end
 end

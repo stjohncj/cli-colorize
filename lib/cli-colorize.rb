@@ -83,7 +83,6 @@ module CLIColorize
       "#{CTRLSTR_START+control_string+CTRLSTR_DELIM}#{text}#{CTRLSTR_END}"
     end
   end
-
   # Instance method that exposes the class method colorize to classes that `include 'CLIColorize'`
   def colorize(text, color=nil)
     CLIColorize.colorize(text, color)
@@ -93,19 +92,25 @@ module CLIColorize
   def CLIColorize.puts(text, color=nil)
     STDOUT.puts CLIColorize.colorize(text, color)
   end
-
+  
   # Call STDOUT.print with the colorized text.
   def CLIColorize.print(text, color=nil)
     STDOUT.print CLIColorize.colorize(text, color)
+  end
+  
+  def CLIColorize.colorize_if_tty(text, color=nil)
+    STDOUT.isatty ? CLIColorize.colorize(text, color) : text
+  end
+  def colorize_if_tty(text, color=nil)
+    CLIColorize.colorize_if_tty(text, color)
   end
 
   # Call STDOUT.puts with the colorized text if STDOUT is a tty device.
   # (If STDOUT has been redirected to a file, it will be a block device,
   # not a tty device, and we wouldn't want the ANSI codes inserted.
   def CLIColorize.puts_colorized_if_tty(text, color=nil)
-    STDOUT.puts(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
+    STDOUT.puts(CLIColorize.colorize_if_tty(text, color))
   end
-
   # instance method delegating to class method, see CLIColorize.puts_if_tty
   def puts_colorized_if_tty(text, color=nil)
     CLIColorize.puts_colorized_if_tty(text, color)
@@ -115,14 +120,12 @@ module CLIColorize
   # (If STDOUT has been redirected to a file, it will be a block device,
   # not a tty device, and we wouldn't want the ANSI codes inserted.
   def CLIColorize.print_colorized_if_tty(text, color=nil)
-    STDOUT.print(STDOUT.isatty ? CLIColorize.colorize(text, color) : text)
+    STDOUT.print(CLIColorize.colorize_if_tty(text, color))
   end
-
   # instance method delegating to class method, see CLIColorize.print_if_tty
   def print_colorized_if_tty(text, color=nil)
     CLIColorize.print_colorized_if_tty(text, color)
   end
-
 
   # Use safe_colorize in conjunction with CLIColorize.off and CLIColorize.on to conditionally
   # determine whether or not output will be given the control characters for colorization.
@@ -131,7 +134,6 @@ module CLIColorize
     return text if @@off
     colorize(text, color)
   end
-
   # Instance method that exposes the class method safe_colorize to classes that `include 'CLIColorize'`
   def safe_colorize(text, color=nil)
     CLIColorize.safe_colorize(text, color)
@@ -153,27 +155,26 @@ module CLIColorize
   def CLIColorize.safe_puts(text, color=nil)
     STDOUT.puts CLIColorize.safe_colorize(text, color)
   end
-
-  # Call STDOUT.print with the colorized text.
-  def CLIColorize.safe_print(text, color=nil)
-    STDOUT.print CLIColorize.safe_colorize(text, color)
-  end
-
   # Instance method that exposes the class method safe_puts to classes that `include 'CLIColorize'`
   def safe_puts(text, color=nil)
     CLIColorize.safe_puts(text, color)
   end
 
+  # Call STDOUT.print with the colorized text.
+  def CLIColorize.safe_print(text, color=nil)
+    STDOUT.print CLIColorize.safe_colorize(text, color)
+  end
   # Instance method that exposes the class method safe_puts to classes that `include 'CLIColorize'`
   def safe_print(text, color=nil)
     CLIColorize.safe_print(text, color)
   end
 
   def CLIColorize.default_color; @@default_color; end
+  def default_color; CLIColorize.default_color; end
+  
   def CLIColorize.default_color=(color)
     @@default_color = color.to_sym
   end
-  def default_color; CLIColorize.default_color; end
   def default_color=(color)
     CLIColorize.default_color=(color)
   end
@@ -188,4 +189,34 @@ module CLIColorize
   def CLIColorize.off;  @@off = true;  nil; end
   def CLIColorize.on;   @@off = false; nil; end
 
+end
+
+# Monkey monkey!  I got a monkey, his name is Patches!
+#          __
+#     w  c(..)o   (
+#      \__(-)    __)
+#          /\   (
+#         /(_)___)
+#         w /|
+#          | \
+#ejm97    m  m
+#
+class String
+  CLIColorize::CONFIG.keys.each do |action|
+    define_method action do
+      return CLIColorize.colorize_if_tty(self, {:config => action})
+    end
+  end
+  
+  CLIColorize::SET_FORE.keys.each do |foreground|
+    define_method foreground do
+      return CLIColorize.colorize_if_tty(self, {:foreground => foreground})
+    end
+  end
+  
+  CLIColorize::SET_BACK.keys.each do |background|
+    define_method "bg_#{background.to_s}".to_sym do
+      return CLIColorize.colorize_if_tty(self, {:background => background})
+    end
+  end
 end
