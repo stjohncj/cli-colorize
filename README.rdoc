@@ -29,6 +29,10 @@
   - :swap         - Swap foreground and background color
   - :hide         - Hide text (set foreground to background color)
 
+=== String with CLIColorize
+  require 'cli-colorize'
+  str = 'The ' + 'Quick'.bright + ' Red'.red + ' Fox ' + 'Jumps'.blink + ' Over the ' + 'Lazy '.underline + 'Brown'.brown + ' Dog'
+
 === Using the CLIColorize module directly:
   CLIColorize.off
   # Prints in blue.
