@@ -5,7 +5,7 @@
 
 
 == Installation:
-  <sudo> gem install cli-colorize
+  gem install cli-colorize
 
 
 == Usage:
